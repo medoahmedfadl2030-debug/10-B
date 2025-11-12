@@ -27,9 +27,9 @@ const fileToGenerativePart = async (file: File): Promise<{ inlineData: { mimeTyp
 
 
 export const describeImage = async (imageFile: File, prompt: string): Promise<string> => {
-    // Fix: Removed explicit API key check and simplified error handling to align with coding guidelines.
-    // The `generateContent` call now uses the correctly structured image Part.
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    // The API key is hardcoded for browser-based execution as requested.
+    // In a production application, this should be handled via a secure backend proxy.
+    const ai = new GoogleGenAI({ apiKey: "AIzaSyDLJLggKlM3XRVptAxkpdTKB0C0ARW4PrY" });
 
     try {
         const imagePart = await fileToGenerativePart(imageFile);
