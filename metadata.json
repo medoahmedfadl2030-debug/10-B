@@ -1,0 +1,5 @@
+{
+  "name": "AI Photo Recognizer",
+  "description": "An intelligent web application that uses Google's Gemini API to analyze and describe the contents of any uploaded image.",
+  "requestFramePermissions": []
+}
