@@ -1,8 +1,9 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-// Utility function to convert a File object to a GoogleGenerativeAI.Part object.
-const fileToGenerativePart = async (file: File): Promise<{ mimeType: string, data: string }> => {
+// Fix: Updated function to return a Part object with `inlineData` to match the expected format for image data,
+// which resolves the TypeScript error. The comment was also updated to remove references to deprecated APIs.
+const fileToGenerativePart = async (file: File): Promise<{ inlineData: { mimeType: string, data: string } }> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -14,8 +15,10 @@ const fileToGenerativePart = async (file: File): Promise<{ mimeType: string, dat
         return;
       }
       resolve({
-        mimeType: file.type,
-        data: base64Data
+        inlineData: {
+          mimeType: file.type,
+          data: base64Data
+        }
       });
     };
     reader.onerror = (error) => reject(error);
@@ -24,9 +27,8 @@ const fileToGenerativePart = async (file: File): Promise<{ mimeType: string, dat
 
 
 export const describeImage = async (imageFile: File, prompt: string): Promise<string> => {
-    if (!process.env.API_KEY) {
-        throw new Error("API_KEY environment variable is not set.");
-    }
+    // Fix: Removed explicit API key check and simplified error handling to align with coding guidelines.
+    // The `generateContent` call now uses the correctly structured image Part.
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
     try {
@@ -35,7 +37,7 @@ export const describeImage = async (imageFile: File, prompt: string): Promise<st
 
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
-            contents: { parts: [textPart, imagePart] },
+            contents: { parts: [imagePart, textPart] },
         });
 
         const text = response.text;
